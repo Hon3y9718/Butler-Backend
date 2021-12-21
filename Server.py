@@ -1,8 +1,8 @@
-from fastapi import FastAPI, Request, WebSocket
+from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from fastapi.templating import Jinja2Templates
 import webbrowser
 from typing import List
-from starlette.websockets import WebSocketDisconnect
+from fastapi.responses import RedirectResponse
 
 edgePath = 'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe'
 webbrowser.register('edge', None, webbrowser.BackgroundBrowser(edgePath))
@@ -30,6 +30,10 @@ manager = ConnectionManager()
 app = FastAPI(title="Location API")
 templates = Jinja2Templates(directory="templates")
 isConnected = False
+
+@app.get("/")
+def getDocs():
+    return RedirectResponse('/docs')
 
 @app.websocket('/ws/{uid}')
 async def websocket_endpoint(websocket: WebSocket, uid: str):
